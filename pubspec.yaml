@@ -1,0 +1,22 @@
+name: flutter_story
+repository: https://github.com/shirvanie/flutter_story/tree/master/
+issue_tracker: https://github.com/shirvanie/flutter_story/issues
+homepage: https://github.com/shirvanie/flutter_story
+description: Flutter Story
+email: ihamedshirvani@gmail.com
+version: 0.0.1
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  uses-material-design: true
