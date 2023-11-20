@@ -4,7 +4,7 @@ issue_tracker: https://github.com/shirvanie/flutter_story/issues
 homepage: https://github.com/shirvanie/flutter_story
 description: A flutter plugin for creating story (like Instagram, WhatsApp, Telegram, Facebook, etc) for all platforms.
 email: ihamedshirvani@gmail.com
-version: 1.0.0
+version: 1.0.1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'

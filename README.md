@@ -68,7 +68,7 @@ Add *flutter_story* as a dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_story: ^1.0.0
+  flutter_story: ^1.0.1
 ```
 
 Import the plugin package to your dart code
