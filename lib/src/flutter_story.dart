@@ -50,8 +50,8 @@ class Story extends StatefulWidget {
     this.addSemanticIndexes = true,
   })  : assert(itemCount == null || itemCount >= 0),
         assert(
-        itemBuilder == null || itemCount != null,
-        "Both [itemBuilder] and [itemCount] must be non-null",
+          itemBuilder == null || itemCount != null,
+          "Both [itemBuilder] and [itemCount] must be non-null",
         );
 
   /// It can be used to control the state of [Story].
@@ -187,16 +187,16 @@ class _StoryState extends State<Story> {
     double screenHeight = MediaQuery.of(context).size.height;
     _children = _orderByVisited();
     List<StoryUser> childrenNotVisited =
-    _children.where((e) => e.children.any((e) => !e.visited)).toList();
+        _children.where((e) => e.children.any((e) => !e.visited)).toList();
     List<StoryUser> childrenAllVisited =
-    _children.where((e) => !e.children.any((e) => !e.visited)).toList();
+        _children.where((e) => !e.children.any((e) => !e.visited)).toList();
     return SingleChildScrollView(
       child: Builder(builder: (context) {
         return Container(
           color: widget.backgroundColor,
           width: widget.scrollDirection == Axis.vertical ? widget.height : null,
           height:
-          widget.scrollDirection == Axis.vertical ? null : widget.height,
+              widget.scrollDirection == Axis.vertical ? null : widget.height,
           child: ListView.builder(
             controller: widget.scrollController,
             scrollDirection: widget.scrollDirection,
@@ -229,34 +229,34 @@ class _StoryState extends State<Story> {
                       Offset offset = _getStoryUserPosition(
                           context, screenWidth, screenHeight);
                       Navigator.push(
-                          context,
-                          _StoryPageRoute(
-                              startPosition: offset,
-                              backgroundColor: widget.color,
-                              page: _Storyboard(
-                                  key: _storyboardKey,
-                                  storyController: widget.controller,
-                                  autoplay: widget.autoplay,
-                                  storyIndex: !widget.sortByVisited
-                                      ? index
-                                      : index < childrenNotVisited.length
-                                      ? index
-                                      : index -
-                                      (childrenNotVisited.length),
-                                  cardIndex: null,
-                                  allCardVisited: !widget.sortByVisited
-                                      ? s.children
-                                      .where((x) => x.visited)
-                                      .length ==
-                                      s.children.length
-                                      ? true
-                                      : false
-                                      : index >= childrenNotVisited.length,
-                                  children: !widget.sortByVisited
-                                      ? _children
-                                      : index < childrenNotVisited.length
-                                      ? childrenNotVisited
-                                      : childrenAllVisited)))
+                              context,
+                              _StoryPageRoute(
+                                  startPosition: offset,
+                                  backgroundColor: widget.color,
+                                  page: _Storyboard(
+                                      key: _storyboardKey,
+                                      storyController: widget.controller,
+                                      autoplay: widget.autoplay,
+                                      storyIndex: !widget.sortByVisited
+                                          ? index
+                                          : index < childrenNotVisited.length
+                                              ? index
+                                              : index -
+                                                  (childrenNotVisited.length),
+                                      cardIndex: null,
+                                      allCardVisited: !widget.sortByVisited
+                                          ? s.children
+                                                      .where((x) => x.visited)
+                                                      .length ==
+                                                  s.children.length
+                                              ? true
+                                              : false
+                                          : index >= childrenNotVisited.length,
+                                      children: !widget.sortByVisited
+                                          ? _children
+                                          : index < childrenNotVisited.length
+                                              ? childrenNotVisited
+                                              : childrenAllVisited)))
                           .then((_) => _autoplay = widget.autoplay);
                     }
                     s.onPressed?.call(index);
@@ -352,7 +352,7 @@ class _StoryState extends State<Story> {
       }
     }
     List<StoryUser> childrenNotVisited =
-    _children.where((e) => e.children.any((e) => !e.visited)).toList();
+        _children.where((e) => e.children.any((e) => !e.visited)).toList();
     return Navigator.push(
         context,
         _StoryPageRoute(
@@ -371,21 +371,26 @@ class _StoryState extends State<Story> {
             ))).then((_) => _autoplay = widget.autoplay);
   }
 
-  /// Opens the [Story] by [StoryUser.id].
+  /// Opens the [Story] by [StoryUser.userId].
   Future<void> _openStoryByUserId(
-      BuildContext context, int id, int? cardIndex) {
-    assert(_children.any((e) => e.id == id));
+      BuildContext context, int userId, int? cardIndex) {
+    assert(_children.any((e) => e.userId == userId));
     assert(cardIndex == null ||
         (cardIndex >= 0 &&
             cardIndex <
-                _children.firstWhere((e) => e.id == id).children.length));
+                _children
+                    .firstWhere((e) => e.userId == userId)
+                    .children
+                    .length));
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     Offset offset = _getStoryUserPosition(context, screenWidth, screenHeight);
-    List<StoryUser> children = [_children.firstWhere((e) => e.id == id)];
+    List<StoryUser> children = [
+      _children.firstWhere((e) => e.userId == userId)
+    ];
     int storyIndex = 0;
     for (int i = 0; i < _children.length; i++) {
-      if (_children[i].id == id) storyIndex = i;
+      if (_children[i].userId == userId) storyIndex = i;
     }
     if (cardIndex != null) {
       for (int i = 0; i < cardIndex; i++) {
@@ -396,7 +401,7 @@ class _StoryState extends State<Story> {
       }
     }
     List<StoryUser> childrenNotVisited =
-    children.where((e) => e.children.any((e) => !e.visited)).toList();
+        children.where((e) => e.children.any((e) => !e.visited)).toList();
     return Navigator.push(
         context,
         _StoryPageRoute(
@@ -464,13 +469,16 @@ class _StoryState extends State<Story> {
     );
   }
 
-  /// Sets a value for the [StoryCard.visited] by [StoryUser.id].
+  /// Sets a value for the [StoryCard.visited] by [StoryUser.userId].
   Future<void> _setStoryCardVisitedByUserId(
-      int id, int cardIndex, bool visited) async {
-    assert(_children.any((e) => e.id == id));
+      int userId, int cardIndex, bool visited) async {
+    assert(_children.any((e) => e.userId == userId));
     assert(cardIndex >= 0 &&
-        cardIndex < _children.firstWhere((e) => e.id == id).children.length);
-    List<StoryUser> children = [_children.firstWhere((e) => e.id == id)];
+        cardIndex <
+            _children.firstWhere((e) => e.userId == userId).children.length);
+    List<StoryUser> children = [
+      _children.firstWhere((e) => e.userId == userId)
+    ];
     StoryCard c = children.first.children[cardIndex];
     children.first.children[cardIndex] = StoryCard(
       key: c.key,
@@ -495,7 +503,7 @@ class _StoryState extends State<Story> {
 class StoryUser extends StatefulWidget {
   const StoryUser({
     super.key,
-    this.id,
+    this.userId,
     this.width = 86,
     this.height = 86,
     this.margin = const EdgeInsets.symmetric(vertical: 5, horizontal: 7),
@@ -512,8 +520,8 @@ class StoryUser extends StatefulWidget {
     this.onLongPressed,
   });
 
-  /// The [id] of the [StoryUser].
-  final int? id;
+  /// The [userId] of the [StoryUser].
+  final int? userId;
 
   /// The [width] of the [StoryUser].
   final double width;
@@ -572,7 +580,7 @@ class _StoryUserState extends State<StoryUser> {
   Widget build(BuildContext context) {
     return Container(
       margin:
-      EdgeInsets.only(top: widget.margin.top, bottom: widget.margin.bottom),
+          EdgeInsets.only(top: widget.margin.top, bottom: widget.margin.bottom),
       child: Column(
         children: [
           Container(
@@ -589,11 +597,11 @@ class _StoryUserState extends State<StoryUser> {
                   border: widget.children.isEmpty
                       ? null
                       : Border.all(
-                    width: widget.borderWidth,
-                    color: widget.children.any((e) => !e.visited)
-                        ? widget.borderColor
-                        : widget.visitedBorderColor,
-                  ),
+                          width: widget.borderWidth,
+                          color: widget.children.any((e) => !e.visited)
+                              ? widget.borderColor
+                              : widget.visitedBorderColor,
+                        ),
                   borderRadius: widget.borderRadius,
                 ),
                 child: Container(
@@ -612,7 +620,7 @@ class _StoryUserState extends State<StoryUser> {
               width: widget.width,
               constraints: BoxConstraints(
                 maxWidth:
-                widget.width + widget.margin.left + widget.margin.right,
+                    widget.width + widget.margin.left + widget.margin.right,
               ),
               margin: const EdgeInsets.only(top: 4),
               child: widget.label!._toEllipsis._toCenter._toOneLine,
@@ -781,7 +789,7 @@ class StoryCardMessageBox extends StatefulWidget {
   /// Returns a [StoryCardMessage] that includes the card index and message.
   final ValueChanged<StoryCardMessage>? onMessage;
 
-  /// Creates a layout widget on the [StoryCard] when the [StoryCardMessageBox]
+  /// Creates a layout widget on the [StoryCard] when the [StoryCardMessageBox].
   /// opens message box. a overlay widget placed in the [child].
   /// The widget below this widget in the tree.
   /// This widget can only have one child. To lay out multiple children,
@@ -848,11 +856,11 @@ class StoryCardForwardButton extends StatefulWidget {
   /// The [color] of the [StoryCardForwardButton].
   final Color color;
 
-  /// A Icon Widget that is placed in right of the [StoryCardForwardButton].
+  /// A Icon Widget that is placed in right of the [StoryCardMessageBox].
   /// Gets a IconData.
   final IconData icon;
 
-  /// The [iconSize] of the [StoryCardLikeButton].
+  /// The [iconSize] of the [StoryCardForwardButton].
   final double iconSize;
 
   /// This callback is called when previous [StoryCard] is displayed.
@@ -928,22 +936,23 @@ class StoryController extends ValueNotifier<dynamic> {
   /// Opens the [Story].
   /// If the [cardIndex] null, default [cardIndex] is not [StoryCard.visited].
   Future<void> openStory(
-      BuildContext context, {
-        int storyIndex = 0,
-        int? cardIndex,
-      }) async {
+    BuildContext context, {
+    int storyIndex = 0,
+    int? cardIndex,
+  }) async {
     assert(isAttached, "StoryController must be attached to a Story");
     return _storyState!._openStory(context, storyIndex, cardIndex);
   }
 
-  /// Opens the [Story] by [StoryUser.id].
+  /// Opens the [Story] by [StoryUser.userId].
+  /// If the [cardIndex] null, default [cardIndex] is not [StoryCard.visited].
   Future<void> openStoryByUserId(
-      BuildContext context, {
-        int id = 0,
-        int? cardIndex,
-      }) async {
+    BuildContext context, {
+    int userId = 0,
+    int? cardIndex,
+  }) async {
     assert(isAttached, "StoryController must be attached to a Story");
-    return _storyState!._openStoryByUserId(context, id, cardIndex);
+    return _storyState!._openStoryByUserId(context, userId, cardIndex);
   }
 
   /// Sets a value for the [StoryCard.visited].
@@ -956,15 +965,15 @@ class StoryController extends ValueNotifier<dynamic> {
     return _storyState!._setStoryCardVisited(storyIndex, cardIndex, visited);
   }
 
-  /// Sets a value for the [StoryCard.visited] by [StoryUser.id].
+  /// Sets a value for the [StoryCard.visited] by [StoryUser.userId].
   Future<void> setStoryCardVisitedByUserId({
-    required int storyIndex,
+    required int userId,
     required int cardIndex,
     required bool visited,
   }) async {
     assert(isAttached, "StoryController must be attached to a Story");
     return _storyState!
-        ._setStoryCardVisitedByUserId(storyIndex, cardIndex, visited);
+        ._setStoryCardVisitedByUserId(userId, cardIndex, visited);
   }
 
   /// Plays the [Story].
@@ -1007,7 +1016,7 @@ extension _TextExtention on Text {
       locale: locale,
       softWrap: softWrap,
       overflow: TextOverflow.ellipsis,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
       maxLines: maxLines,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,
@@ -1022,7 +1031,7 @@ extension _TextExtention on Text {
       locale: locale,
       softWrap: softWrap,
       overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
       maxLines: maxLines,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,
@@ -1037,21 +1046,21 @@ extension _TextExtention on Text {
       locale: locale,
       softWrap: softWrap,
       overflow: overflow,
-      textScaleFactor: textScaleFactor,
+      textScaler: textScaler,
       maxLines: 1,
       semanticsLabel: semanticsLabel,
       textWidthBasis: textWidthBasis,
       textHeightBehavior: textHeightBehavior,
       selectionColor: selectionColor);
   Text get _toCardLabel => Text(
-    data!,
-    key: key,
-    style: const TextStyle(
-        color: Colors.white,
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-        overflow: TextOverflow.ellipsis),
-  );
+        data!,
+        key: key,
+        style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.ellipsis),
+      );
 }
 
 /// A modal route that replaces the entire screen with a [_Storyboard]
@@ -1065,30 +1074,30 @@ class _StoryPageRoute extends PageRouteBuilder {
     this.backgroundColor,
     required this.page,
   }) : super(
-    pageBuilder: (context, animation, secondaryAnimation) => page,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      animation =
-          CurvedAnimation(parent: animation, curve: animationCurve);
-      return Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: backgroundColor,
-        body: SlideTransition(
-          position: Tween<Offset>(
-            begin: startPosition,
-            end: Offset.zero,
-          ).animate(animation),
-          child: ScaleTransition(
-            scale: animation,
-            alignment: Alignment.topLeft,
-            child: child,
-          ),
-        ),
-      );
-    },
-    transitionDuration: duration,
-    reverseTransitionDuration: reverseDuration,
-    fullscreenDialog: true,
-  );
+          pageBuilder: (context, animation, secondaryAnimation) => page,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            animation =
+                CurvedAnimation(parent: animation, curve: animationCurve);
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: backgroundColor,
+              body: SlideTransition(
+                position: Tween<Offset>(
+                  begin: startPosition,
+                  end: Offset.zero,
+                ).animate(animation),
+                child: ScaleTransition(
+                  scale: animation,
+                  alignment: Alignment.topLeft,
+                  child: child,
+                ),
+              ),
+            );
+          },
+          transitionDuration: duration,
+          reverseTransitionDuration: reverseDuration,
+          fullscreenDialog: true,
+        );
 
   /// The [startPosition] of the [_StoryPageRoute].
   final Offset startPosition;
@@ -1189,7 +1198,7 @@ class _StoryboardState extends State<_Storyboard>
               ? _currentStoryIndex
               : (_storyIndex >= 0 ? _storyIndex : 0);
           int pauseCartIndex =
-          _getLastVisitedCardIndex(storyIndex: pauseStoryIndex);
+              _getLastVisitedCardIndex(storyIndex: pauseStoryIndex);
           widget.children[pauseStoryIndex].children[pauseCartIndex].onPause
               ?.call(pauseCartIndex);
         }
@@ -1202,7 +1211,7 @@ class _StoryboardState extends State<_Storyboard>
       if (!_isDrag) {
         if (_storyIndex < widget.children.length) {
           int resumeCartIndex =
-          _getLastVisitedCardIndex(storyIndex: _storyIndex);
+              _getLastVisitedCardIndex(storyIndex: _storyIndex);
           widget.children[_storyIndex].children[resumeCartIndex].onResume
               ?.call(resumeCartIndex);
         }
@@ -1313,7 +1322,7 @@ class _StoryboardState extends State<_Storyboard>
       if (cards.isEmpty) return;
       if (isCallVisit) {
         WidgetsBinding.instance.addPostFrameCallback(
-                (_) => cards[_cardIndex].onVisited?.call(_cardIndex));
+            (_) => cards[_cardIndex].onVisited?.call(_cardIndex));
       }
       if (_autoplay) {
         double timeLeft = cards[_cardIndex].cardDuration.inMilliseconds -
@@ -1323,7 +1332,7 @@ class _StoryboardState extends State<_Storyboard>
         _storyCardTimer
             ?.repeat(period: Timer.periodic(cardDuration, (_) => _nextStory()))
             .then((_) => _progressController?.repeat(
-            period: cards[_cardIndex].cardDuration));
+                period: cards[_cardIndex].cardDuration));
       }
     } catch (e) {
       return;
@@ -1345,8 +1354,8 @@ class _StoryboardState extends State<_Storyboard>
     } else {
       _pageController
           ?.previousPage(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut)
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut)
           .then((_) {
         widget.children[_storyIndex].children[_cardIndex].onPrevious
             ?.call(_cardIndex);
@@ -1368,8 +1377,8 @@ class _StoryboardState extends State<_Storyboard>
     } else {
       _pageController
           ?.nextPage(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeOut)
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut)
           .then((_) => cards[_cardIndex].onNext?.call(_cardIndex));
     }
   }
@@ -1526,7 +1535,8 @@ class _CardListState extends State<_CardList>
       }
     };
     widget.cardController.isDragUp = () {
-      if (widget.cards[_cardIndex].footer != null) showSendMessage();
+      if (widget.cards[_cardIndex].footer?.messageBox != null)
+        showSendMessage();
     };
     widget.cardController.cardIndexNotifier = (cardIndex) {
       _isLike = false;
@@ -1584,96 +1594,96 @@ class _CardListState extends State<_CardList>
             transitionDuration: const Duration(milliseconds: 0),
             reverseTransitionDuration: const Duration(milliseconds: 0),
             pageBuilder: (_, __, ___) => _StoryCardOpacityScreen(
-              key: _storyCardOpacityScreenKey,
-              color: Colors.black.withAlpha(180),
-              margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Stack(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 50),
-                    child:
-                    widget.cards[_cardIndex].footer?.messageBox?.child,
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: const EdgeInsets.fromLTRB(15, 0, 7, 0),
-                      decoration: BoxDecoration(
-                          borderRadius: widget.cards[_cardIndex].footer
-                              ?.messageBox?.borderRadius,
-                          border: Border.all(
-                              color: widget.cards[_cardIndex].footer!
-                                  .messageBox!.color
-                                  .withAlpha(100),
-                              width: 1)),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              autofocus: true,
-                              keyboardType: TextInputType.multiline,
-                              minLines: 1,
-                              maxLines: 5,
-                              controller: sendMessageController,
-                              focusNode: sendMessageFocusNode,
-                              cursorColor: widget.cards[_cardIndex].footer
-                                  ?.messageBox?.color,
-                              style: TextStyle(
-                                  fontSize: widget.cards[_cardIndex].footer
-                                      ?.messageBox?.fontSize,
-                                  color: widget.cards[_cardIndex].footer
-                                      ?.messageBox?.color),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: widget.cards[_cardIndex].footer
-                                    ?.messageBox?.hintText,
-                                hintStyle: TextStyle(
-                                    fontSize: widget.cards[_cardIndex]
-                                        .footer?.messageBox?.fontSize,
-                                    color: widget.cards[_cardIndex].footer
-                                        ?.messageBox?.color),
-                              ),
-                              onTap: () {
-                                widget.cardController.pauseStory();
-                              },
-                            ),
-                          ),
-                          MaterialButton(
-                            minWidth: 50,
-                            padding: EdgeInsets.zero,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: widget.cards[_cardIndex].footer!
-                                  .messageBox!.borderRadius,
-                            ),
-                            onPressed: () {
-                              widget.cards[_cardIndex].footer?.messageBox
-                                  ?.onMessage
-                                  ?.call(StoryCardMessage(
-                                  cardIndex: _cardIndex,
-                                  message: sendMessageController.text
-                                      .toString()
-                                      .trim()));
-                              hideSendMessage();
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Send",
-                              style: TextStyle(
-                                  color: widget.cards[_cardIndex].footer!
-                                      .messageBox?.color,
-                                  fontSize: widget.cards[_cardIndex].footer
-                                      ?.messageBox?.fontSize),
-                            ),
-                          ),
-                        ],
+                  key: _storyCardOpacityScreenKey,
+                  color: Colors.black.withAlpha(180),
+                  margin: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(bottom: 50),
+                        child:
+                            widget.cards[_cardIndex].footer?.messageBox?.child,
                       ),
-                    ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: const EdgeInsets.fromLTRB(15, 0, 7, 0),
+                          decoration: BoxDecoration(
+                              borderRadius: widget.cards[_cardIndex].footer
+                                  ?.messageBox?.borderRadius,
+                              border: Border.all(
+                                  color: widget.cards[_cardIndex].footer!
+                                      .messageBox!.color
+                                      .withAlpha(100),
+                                  width: 1)),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  autofocus: true,
+                                  keyboardType: TextInputType.multiline,
+                                  minLines: 1,
+                                  maxLines: 5,
+                                  controller: sendMessageController,
+                                  focusNode: sendMessageFocusNode,
+                                  cursorColor: widget.cards[_cardIndex].footer
+                                      ?.messageBox?.color,
+                                  style: TextStyle(
+                                      fontSize: widget.cards[_cardIndex].footer
+                                          ?.messageBox?.fontSize,
+                                      color: widget.cards[_cardIndex].footer
+                                          ?.messageBox?.color),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: widget.cards[_cardIndex].footer
+                                        ?.messageBox?.hintText,
+                                    hintStyle: TextStyle(
+                                        fontSize: widget.cards[_cardIndex]
+                                            .footer?.messageBox?.fontSize,
+                                        color: widget.cards[_cardIndex].footer
+                                            ?.messageBox?.color),
+                                  ),
+                                  onTap: () {
+                                    widget.cardController.pauseStory();
+                                  },
+                                ),
+                              ),
+                              MaterialButton(
+                                minWidth: 50,
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: widget.cards[_cardIndex].footer!
+                                      .messageBox!.borderRadius,
+                                ),
+                                onPressed: () {
+                                  widget.cards[_cardIndex].footer?.messageBox
+                                      ?.onMessage
+                                      ?.call(StoryCardMessage(
+                                          cardIndex: _cardIndex,
+                                          message: sendMessageController.text
+                                              .toString()
+                                              .trim()));
+                                  hideSendMessage();
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "Send",
+                                  style: TextStyle(
+                                      color: widget.cards[_cardIndex].footer!
+                                          .messageBox?.color,
+                                      fontSize: widget.cards[_cardIndex].footer
+                                          ?.messageBox?.fontSize),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ))).then((_) => hideSendMessage());
+                ))).then((_) => hideSendMessage());
   }
 
   /// Hides the [_StoryCardOpacityScreen].
@@ -1693,12 +1703,12 @@ class _CardListState extends State<_CardList>
             transitionDuration: const Duration(milliseconds: 0),
             reverseTransitionDuration: const Duration(milliseconds: 0),
             pageBuilder: (_, __, ___) => _StoryCardOpacityScreen(
-              key: _storyCardOpacityScreenKey,
-              color: Colors.transparent,
-              margin: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: widget.cards[_cardIndex].footer?.forwardButton?.child,
-            ))).then((_) => hideForwardChild());
+                  key: _storyCardOpacityScreenKey,
+                  color: Colors.transparent,
+                  margin: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: widget.cards[_cardIndex].footer?.forwardButton?.child,
+                ))).then((_) => hideForwardChild());
   }
 
   @override
@@ -1806,38 +1816,38 @@ class _CardListState extends State<_CardList>
                     children: [
                       Expanded(
                         child: widget.cards[_cardIndex].footer?.messageBox !=
-                            null
+                                null
                             ? GestureDetector(
-                          onTap: () {
-                            showSendMessage();
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                  borderRadius: widget.cards[_cardIndex]
-                                      .footer?.messageBox?.borderRadius,
-                                  border: Border.all(
-                                      color: widget.cards[_cardIndex]
-                                          .footer!.messageBox!.color
-                                          .withAlpha(100),
-                                      width: widget
-                                          .cards[_cardIndex]
-                                          .footer!
-                                          .messageBox!
-                                          .borderWidth)),
-                              child: Text(
-                                widget.cards[_cardIndex].footer!
-                                    .messageBox!.hintText,
-                                style: TextStyle(
-                                    color: widget.cards[_cardIndex].footer
-                                        ?.messageBox?.color,
-                                    fontSize: widget.cards[_cardIndex]
-                                        .footer?.messageBox?.fontSize),
-                              )),
-                        )
+                                onTap: () {
+                                  showSendMessage();
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: widget.cards[_cardIndex]
+                                            .footer?.messageBox?.borderRadius,
+                                        border: Border.all(
+                                            color: widget.cards[_cardIndex]
+                                                .footer!.messageBox!.color
+                                                .withAlpha(100),
+                                            width: widget
+                                                .cards[_cardIndex]
+                                                .footer!
+                                                .messageBox!
+                                                .borderWidth)),
+                                    child: Text(
+                                      widget.cards[_cardIndex].footer!
+                                          .messageBox!.hintText,
+                                      style: TextStyle(
+                                          color: widget.cards[_cardIndex].footer
+                                              ?.messageBox?.color,
+                                          fontSize: widget.cards[_cardIndex]
+                                              .footer?.messageBox?.fontSize),
+                                    )),
+                              )
                             : Container(
-                          child: widget.cards[_cardIndex].footer?.child,
-                        ),
+                                child: widget.cards[_cardIndex].footer?.child,
+                              ),
                       ),
                       if (widget.cards[_cardIndex].footer?.likeButton != null)
                         IconButton(
@@ -1854,14 +1864,14 @@ class _CardListState extends State<_CardList>
                                       curve: const Cubic(0.7, 0, 0.28, 2.0))),
                               child: Icon(
                                 widget.cards[_cardIndex].footer?.likeButton
-                                    ?.icon ??
+                                        ?.icon ??
                                     (_isLike
                                         ? CupertinoIcons.heart_fill
                                         : CupertinoIcons.heart),
                                 color: _isLike
                                     ? Colors.red
                                     : widget.cards[_cardIndex].footer
-                                    ?.likeButton?.color,
+                                        ?.likeButton?.color,
                               ),
                             ),
                             onPressed: () {
@@ -1871,11 +1881,11 @@ class _CardListState extends State<_CardList>
                                 });
                               }
                               _animationController?.reverse().then(
-                                      (value) => _animationController?.forward());
+                                  (value) => _animationController?.forward());
                               widget
                                   .cards[_cardIndex].footer?.likeButton?.onLike
                                   ?.call(StoryCardLike(
-                                  cardIndex: _cardIndex, liked: _isLike));
+                                      cardIndex: _cardIndex, liked: _isLike));
                             }),
                       if (widget.cards[_cardIndex].footer?.forwardButton !=
                           null)
@@ -1918,7 +1928,7 @@ class _CardListState extends State<_CardList>
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
               color:
-              i < _cardIndex ? Colors.white : Colors.white.withAlpha(180),
+                  i < _cardIndex ? Colors.white : Colors.white.withAlpha(180),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withAlpha(40),
@@ -1930,16 +1940,16 @@ class _CardListState extends State<_CardList>
               borderRadius: BorderRadius.all(
                   Radius.circular(widget.cards[_cardIndex].progressBarHeight))),
           child: i == _cardIndex &&
-              widget.storyIndex == widget.cardController.storyIndex
+                  widget.storyIndex == widget.cardController.storyIndex
               ? AnimatedBuilder(
-              animation: widget.progressController,
-              builder: (context, child) {
-                return LinearProgressIndicator(
-                  value: widget.progressController.value,
-                  backgroundColor: Colors.transparent,
-                  color: Colors.white,
-                );
-              })
+                  animation: widget.progressController,
+                  builder: (context, child) {
+                    return LinearProgressIndicator(
+                      value: widget.progressController.value,
+                      backgroundColor: Colors.transparent,
+                      color: Colors.white,
+                    );
+                  })
               : null,
         ),
       ));
@@ -1952,13 +1962,13 @@ class _CardListState extends State<_CardList>
           height: 100,
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withAlpha(50),
-                  Colors.transparent,
-                ],
-              )),
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.black.withAlpha(50),
+              Colors.transparent,
+            ],
+          )),
         ),
         Container(
           margin: const EdgeInsets.fromLTRB(5, 10, 5, 10),
